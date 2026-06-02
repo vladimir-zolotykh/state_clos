@@ -50,17 +50,16 @@ class OrderedMeta(type):
         fields: list[str] = []
         for key, val in clsdict.items():
             if isinstance(val, Typed):
-                fields += key
-                val.__set_name__(key)
+                fields.append(key)
+                val.__set_name__(None, key)
         clsdict["_fields"] = fields
         return super().__new__(mcls, clsname, bases, clsdict)
 
-    @classmethod
     def __prepare__(clsname, bases, **kwds):
         return OrderedDict()
 
 
-class Person(Metaclass=OrderedMeta):
+class Exercise(metaclass=OrderedMeta):
     name = String()
     weight = Float()
     reps = Integer()
@@ -72,5 +71,5 @@ class Person(Metaclass=OrderedMeta):
 
 
 if __name__ == "__main__":
-    p = Person()
-    print(p)
+    p = Exercise(name="bench", weight=77.5, reps=2)
+    print(p.__dict__, p._fields)
