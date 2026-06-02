@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import MutableMapping, Any
-from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 
-class Typed(ABC):
+# class Typed(ABC):
+class Typed:
     def __init__(self, **kwds):
         for k, v in kwds.items():
             self.__dict__[k] = v
@@ -19,9 +19,9 @@ class Typed(ABC):
             return self
         return instance.__dict__[self._name]
 
-    @abstractmethod
-    def validate(self, val):
-        pass
+    def validate(self, val) -> None:
+        if not isinstance(val, self._expected_type):
+            raise TypeError(f"{val} Expected {self._expected_type}")
 
     def __set__(self, instance, val):
         self.validate(val)
@@ -29,21 +29,15 @@ class Typed(ABC):
 
 
 class String(Typed):
-    def validate(self, val):
-        if not isinstance(val, str):
-            raise TypeError(f"{val} Expected str")
+    _expected_type = str
 
 
 class Float(Typed):
-    def validate(self, val):
-        if not isinstance(val, float):
-            raise TypeError(f"{val} Expected float")
+    _expected_type = float
 
 
 class Integer(Typed):
-    def validate(self, val):
-        if not isinstance(val, int):
-            raise TypeError(f"{val} Expected int")
+    _expected_type = int
 
 
 class OrderedMeta(type):
