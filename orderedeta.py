@@ -5,7 +5,6 @@ from typing import MutableMapping, Any
 from collections import OrderedDict
 
 
-# class Typed(ABC):
 class Typed:
     def __init__(self, **kwds):
         for k, v in kwds.items():
