@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from typing import MutableMapping, Any
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 
 
 class Typed(ABC):
     def __init__(self, **kwds):
-        for k, v in kwds:
+        for k, v in kwds.items():
             self.__dict__[k] = v
 
     def __set_name__(self, owner, name):
@@ -55,11 +56,16 @@ class OrderedMeta(type):
         clsdict["_fields"] = fields
         return super().__new__(mcls, clsname, bases, clsdict)
 
-    def __prepare__(clsname, bases, **kwds):
+    @classmethod
+    def __prepare__(
+        metacls, name: str, bases: tuple[type, ...], /, **kwds: Any
+    ) -> MutableMapping[str, object]:
         return OrderedDict()
 
 
 class Exercise(metaclass=OrderedMeta):
+    _fields: list[str] = []
+
     name = String()
     weight = Float()
     reps = Integer()
